@@ -26,6 +26,26 @@ angular.module('CB2.config', [])
         controllerAs: 'main'
       }
     }
+  })
+	.state('tab.saveFirst', {
+    url: '/save-first?mode',
+    views: {
+      'home': {
+        templateUrl: 'views/home/save-first.html',
+        controller: 'saveFirstCtrl',
+        controllerAs: 'saveFirst'
+      }
+    }
+  })
+	.state('tab.saveSecond', {
+    url: '/save-second',
+    views: {
+      'home': {
+        templateUrl: 'views/home/save-second.html',
+        controller: 'saveSecondCtrl',
+        controllerAs: 'saveSecond'
+      }
+    }
   });
 
 	$urlRouterProvider.otherwise('/home');

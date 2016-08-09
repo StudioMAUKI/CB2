@@ -1,6 +1,6 @@
 angular.module('CB2.services', [])
 .factory('PhotoService', ['$cordovaCamera', '$cordovaImagePicker', '$q', function($cordovaCamera, $cordovaImagePicker, $q) {
-  function getPhotoWithCamera() {
+  function getPhotoFromCamera() {
     var deferred = $q.defer();
 
 		if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
@@ -32,7 +32,7 @@ angular.module('CB2.services', [])
     return deferred.promise;
 	};
 
-	function getPhotoWithPhotoLibrary(reqCount) {
+	function getPhotosFromAlbum(reqCount) {
     var deferred = $q.defer();
 
 		if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
@@ -56,8 +56,8 @@ angular.module('CB2.services', [])
 	};
 
   return {
-    getPhotoWithCamera: getPhotoWithCamera,
-    getPhotoWithPhotoLibrary: getPhotoWithPhotoLibrary
+    getPhotoFromCamera: getPhotoFromCamera,
+    getPhotosFromAlbum: getPhotosFromAlbum
   }
 }])
 .factory('DOMHelper', [function() {
