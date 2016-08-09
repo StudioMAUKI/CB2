@@ -1,0 +1,45 @@
+<ion-modal-view>
+	<ion-header-bar class="bar-positive" align-title="center">
+		<button class="button button-icon button-clear ion-close" ng-click="main.closeSaveDlg()"></button>
+	  <h1 class="title">사진 + 장소</h1>
+	  <button class="button button-icon button-clear ion-checkmark" ng-click="main.confirmSave()"></button>
+	</ion-header-bar>
+	<ion-content scroll="true">
+		<div class="row">
+			<div class="col">
+				<label class="item item-input">
+			    <input type="text" placeholder="이 사진과 장소에 대해 이야기해 주세요." ng-model="main.note">
+			  </label>
+			</div>
+		</div>
+		<div style="width:{{main.calculatedHeight+5}}px;height:{{main.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;margin-right:-4px;">
+			<!-- <img ng-style="{height:main.calculatedHeight}" src="img/add_photo.svg" ng-click="main.addAttatchedImage()"> -->
+      <img style="height:{{main.calculatedHeight}}px;" src="img/add_photo.svg" ng-click="main.addAttatchedImage()">
+		</div>
+    <div ng-repeat="image in main.attatchedImages track by $index" style="width:{{main.calculatedHeight+5}}px;height:{{main.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;">
+			<img style="height:{{main.calculatedHeight}}px;" ng-src="{{image}}" on-hold="main.deleteAttatchedImage($index)">
+		</div>
+		<input type="file" file-model="main.browserFile" ng-show="main.showFileForm()">
+    <div class="row">
+			<div class="col">
+				<label class="item item-input">
+			    <input type="text" placeholder="어디인가요? 장소 이름을 직접 입력할 수 있습니다." ng-model="main.placeNameForSave">
+			  </label>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col place-tags-container">
+				<span class="place-item-tag-large" ng-repeat="tag in main.tags track by $index">{{tag}}&nbsp;</span>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
+    <div id="container" class="list list-inset">
+      <label id="rounded" class="item item-input chat-input">
+        <img src="http://image005.flaticon.com/1/png/512/1/1533.png" height="20px">&nbsp;&nbsp;
+        <input type="text" placeholder="태그를 입력하세요" ng-focus="scrollTop()" ng-keydown="main.processTags($event)" ng-model="main.tag">
+      </label>
+    </div>
+  </ion-footer-bar>
+</ion-modal-view>
