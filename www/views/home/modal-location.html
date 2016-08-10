@@ -1,0 +1,23 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-positive" align-title="center">
+    <button class="button button-icon button-clear ion-ios-navigate-outline" ng-click="saveFirst.refreshPosition()"></button>
+		<h1 class="title">위치 지정</h1>
+    <button class="button button-clear" ng-click="saveFirst.closeLocationDlg()">취소</button>
+	</ion-header-bar>
+  <ion-content scroll="false">
+    <!-- <div class="list">
+      <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <i class="icon ion-search placeholder-icon"></i>
+          <input type="text" placeholder="위치를 찾아보세요">
+          <ion-google-place placeholder="Enter an address, Apt# and ZIP" ng-model="location" />
+        </label>
+        <button class="button button-small">
+          검색
+        </button>
+      </div>
+    </div> -->
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-focus="saveFirst.disableTap()">
+    <div id="map" data-tap-disabled="true"></div>
+	</ion-content>
+</ion-modal-view>

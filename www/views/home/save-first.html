@@ -20,13 +20,16 @@
 			<img style="height:{{saveFirst.calculatedHeight}}px;" ng-src="{{image}}" on-hold="saveFirst.deleteAttatchedImage($index)">
 		</div>
 		<input type="file" file-model="saveFirst.browserFile" ng-show="saveFirst.showFileForm()">
-    <div class="row">
+    <!-- <div class="row">
 			<div class="col">
 				<label class="item item-input">
-			    <input type="text" placeholder="어디인가요? 장소 이름을 직접 입력할 수 있습니다." ng-model="saveFirst.placeNameForSave">
+			    <input type="text" placeholder="어디인가요? 장소 이름을 직접 입력할 수 있습니다." ng-model="saveFirst.placeNameForSave" ng-click="saveFirst.showLocationDlg()">
 			  </label>
 			</div>
-		</div>
+		</div> -->
+    <a class="button button-stable button-full icon-left ion-ios-location" ng-click="saveFirst.showLocationDlg()">
+      {{saveFirst.locationBtnPlaceHolder}}
+    </a>
 
 		<div class="row">
 			<div class="col place-tags-container">
