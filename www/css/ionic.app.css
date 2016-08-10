@@ -55,6 +55,9 @@ $dark:                            #444 !default;
     .body-tumblr .active .modal-backdrop-bg {
       background-color: #36465d;
       opacity: 0.98; } }
+  .body-tumblr .popup .popup-head .popup-title,
+  .body-tumblr .popup .popup-head .popup-sub-title {
+    color: #445569; }
   .body-tumblr .item,
   .body-tumblr .item-complex .item-content {
     background: #36465d;

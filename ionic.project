@@ -8,5 +8,43 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
+  ],
+  "proxies": [
+    {
+      "path": "/naver",
+      "proxyUrl": "http://blog.naver.com"
+    },
+    {
+      "path": "/mauki",
+      "proxyUrl": "http://neapk-test01.japaneast.cloudapp.azure.com"
+    },
+    {
+      "path": "/mauki_dev",
+      "proxyUrl": "http://192.168.1.3:8000"
+    },
+    {
+      "path": "/kplaces",
+      "proxyUrl": "https://place.kakao.com"
+    },
+    {
+      "path": "/nblog",
+      "proxyUrl": "http://blog.naver.com"
+    },
+    {
+      "path": "/nmblog",
+      "proxyUrl": "http://m.blog.naver.com"
+    },
+    {
+      "path": "/mplate",
+      "proxyUrl": "https://www.mangoplate.com"
+    },
+    {
+      "path": "/nmap",
+      "proxyUrl": "http://map.naver.com"
+    },
+    {
+      "path": "/daum",
+      "proxyUrl": "https://apis.daum.net"
+    }
   ]
 }

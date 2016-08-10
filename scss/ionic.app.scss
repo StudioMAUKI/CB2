@@ -89,6 +89,13 @@ $light: #ffffff;
       opacity: 0.98;
     }
   }
+  //Popup
+  .popup .popup-head{
+    .popup-title,
+    .popup-sub-title {
+      color: $dark-positive;
+    }
+  }
   //Lists and Items
   .item,
   .item-complex .item-content {
