@@ -4,12 +4,12 @@
 	  <h1 class="title">이제 공유하세요!</h1>
 	  <button class="button button-clear" ng-click="saveSecond.goHome()">닫기</button>
 	</ion-header-bar>
-	<ion-content scroll="true">
+	<ion-content scroll="true" style="text-align:left">
 		<div class="row">
 			<div class="col">
-				<label class="item item-input">
-			    <input type="text" placeholder="이 사진과 장소에 대해 이야기해 주세요." ng-model="saveSecond.note">
-			  </label>
+				<p>
+					{{saveSecond.place.userPost.notes[0].content}}
+				</p>
 			</div>
 		</div>
 		<div style="width:{{saveSecond.calculatedHeight+5}}px;height:{{saveSecond.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;margin-right:-4px;">
@@ -19,14 +19,6 @@
     <div ng-repeat="image in saveSecond.attatchedImages track by $index" style="width:{{saveSecond.calculatedHeight+5}}px;height:{{saveSecond.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;">
 			<img style="height:{{saveSecond.calculatedHeight}}px;" ng-src="{{image}}" on-hold="saveSecond.deleteAttatchedImage($index)">
 		</div>
-		<input type="file" file-model="saveSecond.browserFile" ng-show="saveSecond.showFileForm()">
-    <div class="row">
-			<div class="col">
-				<label class="item item-input">
-			    <input type="text" placeholder="어디인가요? 장소 이름을 직접 입력할 수 있습니다." ng-model="saveSecond.placeNameForSave">
-			  </label>
-			</div>
-		</div>
 
 		<div class="row">
 			<div class="col place-tags-container">
@@ -34,12 +26,4 @@
 			</div>
 		</div>
 	</ion-content>
-	<ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
-    <div id="container" class="list list-inset">
-      <label id="rounded" class="item item-input chat-input">
-        <img src="http://image005.flaticon.com/1/png/512/1/1533.png" height="20px">&nbsp;&nbsp;
-        <input type="text" placeholder="태그를 입력하세요" ng-focus="scrollTop()" ng-keydown="saveSecond.processTags($event)" ng-model="saveSecond.tag">
-      </label>
-    </div>
-  </ion-footer-bar>
 </ion-view>

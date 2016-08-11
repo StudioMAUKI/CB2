@@ -4,7 +4,7 @@
 	  <h1 class="title">사진 + 장소</h1>
 	  <button class="button button-icon icon-right button-clear ion-ios-arrow-right" ng-click="saveFirst.goNext()">다음</button>
 	</ion-header-bar>
-	<ion-content scroll="true">
+	<ion-content scroll="true" style="text-align:left">
 		<div class="row">
 			<div class="col">
 				<label class="item item-input">
@@ -13,8 +13,7 @@
 			</div>
 		</div>
 		<div style="width:{{saveFirst.calculatedHeight+5}}px;height:{{saveFirst.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;margin-right:-4px;">
-			<!-- <img ng-style="{height:saveFirst.calculatedHeight}" src="img/add_photo.svg" ng-click="saveFirst.addAttatchedImage()"> -->
-      <img style="height:{{saveFirst.calculatedHeight}}px;" src="img/add_photo.svg" ng-click="saveFirst.addAttatchedImage()">
+			<img style="height:{{saveFirst.calculatedHeight}}px;" src="img/add_photo.svg" ng-click="saveFirst.addAttatchedImage()">
 		</div>
     <div ng-repeat="image in saveFirst.attatchedImages track by $index" style="width:{{saveFirst.calculatedHeight+5}}px;height:{{saveFirst.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;">
 			<img style="height:{{saveFirst.calculatedHeight}}px;" ng-src="{{image}}" on-hold="saveFirst.deleteAttatchedImage($index)">

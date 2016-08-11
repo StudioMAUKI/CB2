@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('CB2.controllers')
-.controller('saveFirstCtrl', ['$scope', '$ionicPopup', '$ionicHistory', '$state', '$ionicModal', 'PhotoService', 'DOMHelper', function($scope, $ionicPopup, $ionicHistory, $state, $ionicModal, PhotoService, DOMHelper) {
+.controller('saveFirstCtrl', ['$scope', '$q', '$ionicPopup', '$ionicHistory', '$state', '$ionicModal', '$ionicActionSheet', '$ionicLoading', 'PhotoService', 'DOMHelper', 'StorageService', 'CacheService', 'RemoteAPIService', function($scope, $q, $ionicPopup, $ionicHistory, $state, $ionicModal, $ionicActionSheet, $ionicLoading, PhotoService, DOMHelper, StorageService, CacheService, RemoteAPIService) {
   var saveFirst = this;
   saveFirst.attatchedImages = [];
   saveFirst.note = '';
@@ -12,33 +12,41 @@ angular.module('CB2.controllers')
   saveFirst.calculatedHeight = DOMHelper.getImageHeight('view-container', 3, 5);
   console.info('saveFirst.calculatedHeight = ' + saveFirst.calculatedHeight);
 
-  //  private methods
+  //////////////////////////////////////////////////////////////////////////////
+  //  Private Methods
+  //////////////////////////////////////////////////////////////////////////////
+  function init() {
+    saveFirst.attatchedImages = [];
+    saveFirst.note = '';
+    saveFirst.placeNameForSave = '';
+    saveFirst.locationBtnPlaceHolder = '어디인가요? 장소 이름을 직접 입력할 수 있습니다';
+    saveFirst.gPlace = null;
+  }
+
   function showAlert(title, msg) {
 		return $ionicPopup.alert({ title: title, template: msg });
-	};
+	}
 
   function getPhotoFromCamera() {
-    saveFirst.attatchedImages = [];
 		PhotoService.getPhotoFromCamera()
 		.then(function(imageURI) {
 			saveFirst.attatchedImages.push(imageURI);
 		}, function(err) {
       console.warn(err);
 		});
-  };
+  }
 
   function getPhotosFromAlbum() {
-    saveFirst.attatchedImages = [];
     PhotoService.getPhotosFromAlbum(10)
     .then(function(imageURIs) {
       saveFirst.attatchedImages = saveFirst.attatchedImages.concat(imageURIs);
     }, function(err) {
       console.warn(err);
     });
-  };
+  }
 
-  function divToFit() {
-    console.log('call divToFit');
+  function fitMapToScreen() {
+    console.log('call fitMapToScreen');
 		var documentHeight = $(document).height();
 		var barHeight = document.getElementsByTagName('ion-header-bar')[0].clientHeight || 44;
     $('#map').css({
@@ -47,7 +55,7 @@ angular.module('CB2.controllers')
 		});
     //  이거 꼭 해줘야 지도가 제대로 그려짐. (안그러면 걍 회색으로 나옴)
     // google.maps.event.trigger(map.mapObj, 'resize');
-	};
+	}
 
   function initAutocomplete() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -138,20 +146,104 @@ angular.module('CB2.controllers')
     // [END region_getplaces]
   }
 
-  //  public methods
+  function postPlace() {
+    var deferred = $q.defer();
+
+		//	브라우저의 경우 테스트를 위해 분기함
+		if (!ionic.Platform.isIOS() && !ionic.Platform.isAndroid()) {
+      saveFirst.attatchedImages = [];
+			saveFirst.attatchedImages.push(saveFirst.browserFile);
+		}
+
+		$ionicLoading.show({
+			template: '<ion-spinner icon="lines">저장 중..</ion-spinner>',
+			duration: 30000
+		});
+
+    var tasksOfUploadingImages = [];
+    for (var i = 0; i < saveFirst.attatchedImages.length; i++) {
+      tasksOfUploadingImages.push(RemoteAPIService.uploadImage(saveFirst.attatchedImages[i]));
+    }
+    $q.all(tasksOfUploadingImages)
+    .then(function(results) {
+      var curPos = StorageService.get('curPos');
+      var uploadedImages = [];
+      for (var i = 0; i < results.length; i++) {
+        uploadedImages.push({content: results[i].url});
+      }
+
+      RemoteAPIService.sendUserPost({
+				lonLat: {
+					lon: curPos.longitude,
+					lat: curPos.latitude
+				},
+				notes: [{
+					content: saveFirst.note
+				}],
+				images: uploadedImages,
+				addr1: { content: StorageService.get('addr1') || null },
+				addr2: { content: StorageService.get('addr2') || null },
+				addr3: { content: StorageService.get('addr3') || null },
+        name: { content: 'test' || null}
+			})
+			.then(function(result) {
+        console.debug(result);
+				$ionicLoading.hide();
+        CacheService.set('lastSavedPlace', result.data);
+        deferred.resolve();
+			}, function(err) {
+        console.error('장소 저장 실패', err);
+				$ionicLoading.hide();
+				showAlert('장소 저장 실패', err);
+        deferred.reject();
+			});
+    }, function(err) {
+      console.error('이미지 업로드 실패', err);
+      $ionicLoading.hide();
+			saveFirst.showAlert('이미지 업로드 실패', err);
+      deferred.reject();
+    });
+
+    return deferred.promise;
+	}
+
+  //////////////////////////////////////////////////////////////////////////////
+  //  Public Methods
+  //////////////////////////////////////////////////////////////////////////////
   saveFirst.showFileForm = function() {
 		return (!ionic.Platform.isIOS() && !ionic.Platform.isAndroid());
 	};
 
-  saveFirst.showSaveDlg = function() {
-    $ionicModal.fromTemplateUrl('views/home/save-window.html', {
-      scope: $scope,
-      animation: 'slide-in-up'
-    })
-    .then(function(modal) {
-      saveFirst.tags = [];
-      saveFirst.saveDlg = modal;
-      saveFirst.saveDlg.show();
+  saveFirst.addAttatchedImage = function() {
+    $ionicActionSheet.show({
+      buttons: [
+        { text: '카메라로 사진 찍기' },
+        { text: '사진 앨범에서 선택' }
+      ],
+      titleText: '사진을 추가 합니다.',
+      cancelText: 'Cancel',
+      buttonClicked: function(index) {
+        console.log('[Event(ActionSheet:click)]Button['+ index + '] is clicked.');
+        if (index == 0) {
+          getPhotoFromCamera();
+        } else {
+          getPhotosFromAlbum();
+        }
+        return true;
+      }
+    });
+  };
+
+  saveFirst.deleteAttatchedImage = function(index) {
+    $ionicPopup.confirm({
+			title: '사진 삭제',
+			template: '선택한 사진을 지우시겠습니까?'
+		})
+		.then(function(res){
+			if (res) {
+        console.log('Delete image : ' + index);
+        saveFirst.attatchedImages.splice(index, 1);
+      }
     });
   };
 
@@ -160,7 +252,11 @@ angular.module('CB2.controllers')
   };
 
   saveFirst.goNext = function() {
-    $state.go('tab.saveSecond');
+    postPlace()
+    .then(function() {
+      $state.go('tab.saveSecond');
+    });
+
   };
 
   saveFirst.showLocationDlg = function() {
@@ -172,7 +268,7 @@ angular.module('CB2.controllers')
 			saveFirst.locationDlg = modal;
 			saveFirst.locationDlg.show();
       initAutocomplete();
-      divToFit();
+      fitMapToScreen();
 		});
   };
 
@@ -191,11 +287,18 @@ angular.module('CB2.controllers')
     });
   };
 
+  //////////////////////////////////////////////////////////////////////////////
   //  Event Handlers
+  //////////////////////////////////////////////////////////////////////////////
+  $scope.$on('$ionicView.loaded', function() {
+    init();
+	});
+
   $scope.$on('$ionicView.afterEnter', function() {
     var backView = $ionicHistory.viewHistory().backView;
     var curView = $ionicHistory.viewHistory().currentView;
     if (backView !== null && backView.stateName === 'tab.home') {
+      init();
       if (curView.stateParams && curView.stateParams.mode) {
         if (curView.stateParams.mode === 'camera') {
           getPhotoFromCamera();

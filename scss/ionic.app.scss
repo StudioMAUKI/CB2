@@ -90,11 +90,14 @@ $light: #ffffff;
     }
   }
   //Popup
-  .popup .popup-head{
+  .popup .popup-head {
     .popup-title,
     .popup-sub-title {
-      color: $dark-positive;
+      color: $extra-dark;
     }
+  }
+  .popup .popup-body {
+    color: $dark-positive;
   }
   //Lists and Items
   .item,

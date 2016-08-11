@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('CB2.controllers')
-.controller('saveSecondCtrl', ['$scope', '$ionicHistory', function($scope, $ionicHistory) {
-  var saveSecond = this;
+.controller('saveSecondCtrl', ['$scope', '$ionicHistory', 'CacheService', function($scope, $ionicHistory, CacheService) {
+  var saveSecond = this;  
 
   //  Public methods
   saveSecond.goHome = function() {
@@ -11,7 +11,8 @@ angular.module('CB2.controllers')
 
   //  Event Handlers
   $scope.$on('$ionicView.afterEnter', function() {
-		console.info('The title of back = ' + $ionicHistory.backTitle());
-    console.info('The View History', $ionicHistory.viewHistory());
+		console.info('The View History', $ionicHistory.viewHistory());
+    saveSecond.place = CacheService.get('lastSavedPlace');
+    console.info('The last saved place', saveSecond.place);
 	});
 }]);

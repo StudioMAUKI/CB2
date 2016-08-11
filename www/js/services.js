@@ -99,6 +99,32 @@ angular.module('CB2.services', [])
     getImageHeight: getImageHeight
   }
 }])
+.factory('CacheService', [function() {
+  var data = {};
+
+  return {
+    set: function(key, value) {
+      //  data[key] = value;
+      return window.sessionStorage.setItem(key, JSON.stringify(value));
+    },
+    get: function(key) {
+      // return data[key];
+      try {
+        return JSON.parse(window.sessionStorage.getItem(key));
+      } catch (err) {
+        return null;
+      }
+    },
+    has: function(key) {
+      // return !(data[key] === undefined);
+      return (window.sessionStorage.getItem(key) !== null);
+    },
+    remove: function(key) {
+      // data[key] = undefined;
+      window.sessionStorage.removeItem(key);
+    }
+  }
+}])
 .factory('StorageService', [function() {
   function get(key) {
     try {

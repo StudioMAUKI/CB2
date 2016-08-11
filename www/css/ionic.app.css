@@ -57,6 +57,8 @@ $dark:                            #444 !default;
       opacity: 0.98; } }
   .body-tumblr .popup .popup-head .popup-title,
   .body-tumblr .popup .popup-head .popup-sub-title {
+    color: #2e3f53; }
+  .body-tumblr .popup .popup-body {
     color: #445569; }
   .body-tumblr .item,
   .body-tumblr .item-complex .item-content {
