@@ -8,17 +8,17 @@
 		<div class="list">
 			<div class="item">
 				<!-- <p> -->
-					{{saveSecond.place.userPost.notes[0].content}}
+					{{saveSecond.post.desc}}
 				<!-- </p> -->
 			</div>
 			<div class="item">
 				<div class="list card">
 				  <div class="item item-image">
-				    <img src="{{saveSecond.place.placePost.images[0].summary}}">
+				    <img src="{{saveSecond.post.placePost.images[0].summary}}">
 				  </div>
 				  <a class="item item-icon-left assertive" href="#">
 				    <i class="icon ion-ios-location-outline"></i>
-				    {{saveSecond.place.placePost.name.content}}&nbsp;<small>{{saveSecond.place.placePost.addr2.content}}</small>
+				    {{saveSecond.post.name}}&nbsp;<small>{{saveSecond.post.addrs[0]}}</small>
 				  </a>
 				</div>
 			</div>
@@ -28,7 +28,7 @@
 			<div class="item">
 				<div class="card">
 				  <div class="item item-text-wrap">
-				    단축 URL이 들어갈 자리
+				    {{saveSecond.shorten_url}}
 				  </div>
 				</div>
 			</div>

@@ -189,7 +189,7 @@ angular.module('CB2.controllers')
 			.then(function(result) {
         console.debug(result);
 				$ionicLoading.hide();
-        CacheService.set('lastSavedPlace', result.data);
+        CacheService.set('lastSavedPost', result.data);
         deferred.resolve();
 			}, function(err) {
         console.error('장소 저장 실패', err);

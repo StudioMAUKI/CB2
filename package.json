@@ -24,7 +24,11 @@
     "cordova-plugin-camera",
     "cordova-plugin-image-picker",
     "cordova-plugin-file",
-    "cordova-plugin-file-transfer"
+    "cordova-plugin-file-transfer",
+    {
+      "locator": "https://github.com/VersoSolutions/CordovaClipboard.git",
+      "id": "com.verso.cordova.clipboard"
+    }
   ],
   "cordovaPlatforms": [
     "android",
