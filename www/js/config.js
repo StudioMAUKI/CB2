@@ -46,6 +46,26 @@ angular.module('CB2.config', [])
         controllerAs: 'saveSecond'
       }
     }
+  })
+	.state('tab.setting', {
+    url: '/setting',
+    views: {
+      'setting': {
+        templateUrl: 'views/setting/main.html',
+        controller: 'settingMainCtrl',
+        controllerAs: 'settingMain'
+      }
+    }
+  })
+	.state('tab.list', {
+    url: '/list?latitude&longitude&radius&rname&limit',
+    views: {
+      'list': {
+        templateUrl: 'views/list/places.html',
+        controller: 'placesCtrl',
+        controllerAs: 'places'
+      }
+    }
   });
 
 	$urlRouterProvider.otherwise('/home');

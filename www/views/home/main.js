@@ -4,8 +4,6 @@ angular.module('CB2.controllers')
 .controller('mainCtrl', ['$scope', '$ionicHistory', '$ionicPopup', '$ionicPlatform', 'RemoteAPIService', 'PKAuthStorageService', function($scope, $ionicHistory, $ionicPopup, $ionicPlatform, RemoteAPIService, PKAuthStorageService) {
   var main = this;
 
-  console.log('mainView.opened.');
-
   //////////////////////////////////////////////////////////////////////////////
   //  Private Mehtods
   //////////////////////////////////////////////////////////////////////////////
@@ -86,7 +84,6 @@ angular.module('CB2.controllers')
   //  Event Handlers
   //////////////////////////////////////////////////////////////////////////////
   $scope.$on('$ionicView.loaded', function() {
-    console.log('mainView.loaded.');
     $ionicPlatform.ready(function() {
       PKAuthStorageService.init()
       .then(function() {
@@ -94,8 +91,8 @@ angular.module('CB2.controllers')
           login();
         } else {
           console.error('You don\'t have email address.');
+          RemoteAPIService.logoutUser(1);
           showEmailPopup();
-
       	  main.myPopup.then(function(res) {
       	    console.log('Tapped!', res);
       			PKAuthStorageService.set('email', main.email);

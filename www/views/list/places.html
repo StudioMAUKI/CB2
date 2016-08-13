@@ -1,0 +1,50 @@
+<!-- start : real contents area -->
+<ion-view title="목록으로 보기">
+	<ion-header-bar class="bar-positive" align-title="center">
+		<h1 class="title">전체 목록</h1>
+		<button class="button button-icon button-clear ion-connection-bars" ng-click="places.popOverOrdering($event)"></button>
+	</ion-header-bar>
+	<ion-content>
+		<ion-refresher pulling-text="Pull to refresh..." on-refresh="places.doRefresh('top')">
+  	</ion-refresher>
+		<a class="button button-small button-full button-stable" style="text-align:right;border-radius:20px;background-color:#CFD8DC;padding-right:10px;" ng-href="#/places-not-yet" ng-show="places.notYetCount > 0 && places.regionName === ''">{{places.notYetCount}}개의 저장한 장소가 정보화 대기중입니다. <i class="ion-arrow-right-c"></i></a>
+		<ion-list show-delete="places.showDelete">
+			<ion-item class="item-divider">
+				{{places.totalCount}}개의 장소를 정렬합니다.
+				<span class="item-note" ng-show="places.regionName">
+					<a ng-click="places.goToMap()" href="#">지도보기</a>
+					<!-- <div class="button button-icon button-clear ion-map" ng-click="places.goToMap()"></div> -->
+				</span>
+			</ion-item>
+			<ion-item collection-repeat="post in places.posts" class="item-thumbnail-right" href="#/places/{{post.uplace_uuid}}" nav-direction="forward">
+				<img ng-src="{{post.thumbnailURL}}" alt="{{post.name}}">
+				<h2>
+					<i class="ion-ios-bookmarks" style="color:#4875e9;" ng-show="!post.visited"></i>&nbsp;{{post.name}}
+				</h2>
+				<!-- <span class="place-item-addr">{{post.address}}</span><br> -->
+				<div class="place-star-point"><i class="{{icon}}" ng-repeat="icon in places.SPS.get(post.userPost.rating.content) track by $index"></i></div>
+				&nbsp;{{post.address}}({{post.distance_from_origin}})<br>
+				<span class="place-item-tag" ng-repeat="tag in post.userPost.tags track by $index">{{tag.content}}</span>
+				<ion-option-button class="button-assertive" ng-click="places.delete(post)">
+        	Delete
+      	</ion-option-button>
+			</ion-item>
+		</ion-list>
+		<ion-infinite-scroll ng-if="!places.isEndOfList()" on-infinite="places.doRefresh('bottom')" immediate-check="false" distance="1%">
+	  </ion-infinite-scroll>
+	</ion-content>
+</ion-view>
+<!-- end : real contents area -->
+
+<script id="popover-ordering.html" type="text/ng-template">
+	<ion-popover-view>
+		<ion-content>
+			<div class="list">
+				<button class="item button button-clear button-full" ng-show="places.regionName === ''"  ng-class="{'button\-positive':places.isActiveMenu(0)}" ng-click="places.changeOrderingType(0)">최근의</button>
+				<button class="item button button-clear button-full" ng-show="places.regionName === ''"  ng-class="{'button\-positive':places.isActiveMenu(1)}" ng-click="places.changeOrderingType(1)">오래된</button>
+				<button class="item button button-clear button-full" ng-class="{'button\-positive':places.isActiveMenu(2)}" ng-click="places.changeOrderingType(2)">가까운</button>
+				<button class="item button button-clear button-full" ng-class="{'button\-positive':places.isActiveMenu(3)}" ng-click="places.changeOrderingType(3)">먼</button>
+			</div>
+		</ion-content>
+	</ion-popover-view>
+</script>
