@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('CB2.controllers')
-.controller('mainCtrl', ['$scope', '$ionicHistory', '$ionicPopup', 'RemoteAPIService', 'PKAuthStorageService', function($scope, $ionicHistory, $ionicPopup, RemoteAPIService, PKAuthStorageService) {
+.controller('mainCtrl', ['$scope', '$ionicHistory', '$ionicPopup', '$ionicPlatform', 'RemoteAPIService', 'PKAuthStorageService', function($scope, $ionicHistory, $ionicPopup, $ionicPlatform, RemoteAPIService, PKAuthStorageService) {
   var main = this;
 
   console.log('mainView.opened.');
@@ -87,24 +87,26 @@ angular.module('CB2.controllers')
   //////////////////////////////////////////////////////////////////////////////
   $scope.$on('$ionicView.loaded', function() {
     console.log('mainView.loaded.');
-    PKAuthStorageService.init()
-    .then(function() {
-      main.email = PKAuthStorageService.get('email');
-      if (RemoteAPIService.hasEmail()) {
-        login();
-      } else {
-        console.error('You don\'t have email address.');
-        showEmailPopup();
-
-    	  main.myPopup.then(function(res) {
-    	    console.log('Tapped!', res);
-    			PKAuthStorageService.set('email', main.email);
+    $ionicPlatform.ready(function() {
+      PKAuthStorageService.init()
+      .then(function() {
+        if (RemoteAPIService.hasEmail()) {
           login();
-    	  });
-      }
-    }, function(err) {
-      showAlert('오류', '초기화 중 오류가 발생했습니다. 앱을 재시작 해주세요.');
+        } else {
+          console.error('You don\'t have email address.');
+          showEmailPopup();
+
+      	  main.myPopup.then(function(res) {
+      	    console.log('Tapped!', res);
+      			PKAuthStorageService.set('email', main.email);
+            login();
+      	  });
+        }
+      }, function(err) {
+        showAlert('오류', '초기화 중 오류가 발생했습니다. 앱을 재시작 해주세요.');
+      });
     });
+
 	});
 
   $scope.$on('$ionicView.afterEnter', function() {

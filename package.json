@@ -27,7 +27,7 @@
       "locator": "https://github.com/VersoSolutions/CordovaClipboard.git",
       "id": "com.verso.cordova.clipboard"
     },
-    "cordova-plugin-file@4.1.1",
+    "cordova-plugin-file",
     "cordova-plugin-file-transfer"
   ],
   "cordovaPlatforms": [

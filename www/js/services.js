@@ -165,9 +165,23 @@ angular.module('CB2.services', [])
         .then(function (success) {
           $cordovaFile.readAsText(cordova.file.dataDirectory, storageFileName)
           .then(function (data) {
-            dicSaved = JSON.parse(data);
-            inited = true;
-            deferred.resolve();
+            console.log('data in storage.txt', data);
+            try {
+              if (data === null || data === '') {
+                console.warn('The data in storage is empty.');
+                inited = true;
+                deferred.resolve();
+              } else {
+                dicSaved = JSON.parse(data);
+                inited = true;
+                deferred.resolve();
+              }
+            } catch (e) {
+              console.error('The data in storage is broken.');
+              inited = false;
+              deferred.reject(e.message);
+            }
+
           }, function (error) {
             cosole.error('Reading from the StorageFile was failed.');
             console.dir(error);
