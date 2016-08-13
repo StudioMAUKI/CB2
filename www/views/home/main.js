@@ -4,6 +4,8 @@ angular.module('CB2.controllers')
 .controller('mainCtrl', ['$scope', '$ionicHistory', '$ionicPopup', 'RemoteAPIService', 'PKAuthStorageService', function($scope, $ionicHistory, $ionicPopup, RemoteAPIService, PKAuthStorageService) {
   var main = this;
 
+  console.log('mainView.opened.');
+
   //////////////////////////////////////////////////////////////////////////////
   //  Private Mehtods
   //////////////////////////////////////////////////////////////////////////////
@@ -31,7 +33,7 @@ angular.module('CB2.controllers')
           // VD 로그인
           RemoteAPIService.loginVD(result)
           .then(function(result) {
-            console.info('login success.');
+            console.log('login success.');
           }, function(err) {
             console.error('loginVD failed.', err);
             RemoteAPIService.logoutUser(4);
@@ -84,18 +86,25 @@ angular.module('CB2.controllers')
   //  Event Handlers
   //////////////////////////////////////////////////////////////////////////////
   $scope.$on('$ionicView.loaded', function() {
-    if (RemoteAPIService.hasEmail()) {
-      login();
-    } else {
-      console.error('You don\'t have email address.');
-      showEmailPopup();
-
-  	  main.myPopup.then(function(res) {
-  	    console.log('Tapped!', res);
-  			PKAuthStorageService.set('email', main.email);
+    console.log('mainView.loaded.');
+    PKAuthStorageService.init()
+    .then(function() {
+      main.email = PKAuthStorageService.get('email');
+      if (RemoteAPIService.hasEmail()) {
         login();
-  	  });
-    }
+      } else {
+        console.error('You don\'t have email address.');
+        showEmailPopup();
+
+    	  main.myPopup.then(function(res) {
+    	    console.log('Tapped!', res);
+    			PKAuthStorageService.set('email', main.email);
+          login();
+    	  });
+      }
+    }, function(err) {
+      showAlert('오류', '초기화 중 오류가 발생했습니다. 앱을 재시작 해주세요.');
+    });
 	});
 
   $scope.$on('$ionicView.afterEnter', function() {

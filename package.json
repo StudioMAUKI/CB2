@@ -23,12 +23,12 @@
     "ionic-plugin-keyboard",
     "cordova-plugin-camera",
     "cordova-plugin-image-picker",
-    "cordova-plugin-file",
-    "cordova-plugin-file-transfer",
     {
       "locator": "https://github.com/VersoSolutions/CordovaClipboard.git",
       "id": "com.verso.cordova.clipboard"
-    }
+    },
+    "cordova-plugin-file@4.1.1",
+    "cordova-plugin-file-transfer"
   ],
   "cordovaPlatforms": [
     "android",
