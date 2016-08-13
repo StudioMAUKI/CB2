@@ -20,7 +20,8 @@
         현재 위치
       </ion-item>
       <ion-item ng-repeat="suggestion in search.suggestions" ng-click="choosePlace(suggestion)">
-        {{suggestion.description}}
+        <!-- {{suggestion.description}} -->
+        <strong>{{suggestion.name}}</strong>&nbsp;<small>{{suggestion.region}}</small>
       </ion-item>
     </div>
 	</ion-content>

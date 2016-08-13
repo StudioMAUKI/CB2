@@ -8,7 +8,6 @@ angular.module('CB2.controllers')
   saveFirst.placeNameForSave = '';
   saveFirst.placeholderTitle = '어디인가요?';
   saveFirst.placeholderSubTitle = '장소 이름을 입력하세요';
-  saveFirst.gPlace = null;
   saveFirst.location = {};
 
   saveFirst.calculatedHeight = DOMHelper.getImageHeight('view-container', 3, 5);
@@ -22,7 +21,7 @@ angular.module('CB2.controllers')
     saveFirst.note = '';
     saveFirst.placeNameForSave = '';
     saveFirst.locationBtnPlaceHolder = '어디인가요? 장소 이름을 직접 입력할 수 있습니다';
-    saveFirst.gPlace = null;
+    saveFirst.location = {};
   }
 
   function showAlert(title, msg) {
@@ -59,9 +58,9 @@ angular.module('CB2.controllers')
     // google.maps.event.trigger(map.mapObj, 'resize');
 	}
 
-  function initAutocomplete() {
+  function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -33.8688, lng: 151.2195},
+      center: {lat: 37.5666103, lng: 126.9783882},
       zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       zoomControl: false,
@@ -69,37 +68,17 @@ angular.module('CB2.controllers')
   		streetViewControl: false
     });
 
-    // Create the search box and link it to the UI element.
-    var input = document.getElementById('pac-input');
-    $('#pac-input').css({
-      width: $(document).width() - 24
-    });
-    // var searchBox = new google.maps.places.SearchBox(input);
-    var options = { //options for autocomplete object
-      types: ['geocode']
-    };
-    var searchBox = new google.maps.places.Autocomplete(input, options);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-    // Bias the SearchBox results towards current map's viewport.
-    map.addListener('bounds_changed', function() {
-      console.info('bounds_changed');
-      searchBox.setBounds(map.getBounds());
-    });
-
     var markers = [];
     // [START region_getplaces]
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
-    searchBox.addListener('places_changed', function() {
-      console.info('places_changed');
-      var places = searchBox.getPlaces();
-
-      if (places.length == 0 || places.length > 1) {
+    $scope.$watch('saveFirst.location', function(newValue) {
+      console.info('places_changed', newValue);
+      var place = newValue;
+      if (!place.name) {
+        console.debug('초기값 받은 것임');
         return;
       }
-      console.info('place: ', places);
-      saveFirst.gPlace = places[0];
 
       // Clear out the old markers.
       markers.forEach(function(marker) {
@@ -109,45 +88,36 @@ angular.module('CB2.controllers')
 
       // For each place, get the icon, name and location.
       var bounds = new google.maps.LatLngBounds();
-      places.forEach(function(place) {
-        var icon = {
-          url: place.icon,
-          size: new google.maps.Size(71, 71),
-          origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(17, 34),
-          scaledSize: new google.maps.Size(25, 25)
-        };
+      var icon = {
+        url: place.icon,
+        size: new google.maps.Size(71, 71),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17, 34),
+        scaledSize: new google.maps.Size(25, 25)
+      };
 
-        // Create a marker for each place.
-        markers.push(new google.maps.Marker({
-          map: map,
-          icon: icon,
-          title: place.name,
-          position: place.geometry.location
-        }));
+      // Create a marker for each place.
+      markers.push(new google.maps.Marker({
+        map: map,
+        icon: icon,
+        title: place.name,
+        position: place.geometry.location
+      }));
 
-        if (place.geometry.location) {
-          console.debug('lat', place.geometry.location.lat());
-          console.debug('lng', place.geometry.location.lng());
-          setTimeout(function(){
-            map.setZoom(15);
-            setTimeout(function() {
-              map.setCenter({
-                lat: place.geometry.location.lat(),
-                lng: place.geometry.location.lng()
-              });
-            }, 100);
+      if (place.geometry.location) {
+        console.debug('lat', place.geometry.location.lat());
+        console.debug('lng', place.geometry.location.lng());
+        setTimeout(function(){
+          map.setZoom(15);
+          setTimeout(function() {
+            map.setCenter({
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            });
           }, 100);
-        }
-
-        // if (place.geometry.viewport) {
-        //   // Only geocodes have viewport.
-        //   bounds.union(place.geometry.viewport);
-        // } else {
-        //   bounds.extend(place.geometry.location);
-        // }
-      });
-      map.fitBounds(bounds);
+        }, 100);
+      }
+      // map.fitBounds(bounds);
     });
     // [END region_getplaces]
   }
@@ -312,6 +282,8 @@ angular.module('CB2.controllers')
     } else {
       console.info('이전 뷰가 홈뷰가 아니었으므로, 카메라나 앨범을 새로 열지 않았음.');
     }
+    fitMapToScreen();
+    initMap();
 		// console.info('The View History', $ionicHistory.viewHistory());
 	});
 }]);

@@ -363,8 +363,15 @@ angular.module('CB2.services', [])
         if (newValue) {
           LocationService.searchAddress(newValue)
           .then(function(result) {
-            // console.log('suggestions', result);
+            console.log('suggestions', result);
             $scope.search.error = null;
+            for (var i = 0; i < result.length ; i++) {
+              result[i].name = result[i].terms[0].value;
+              result[i].region = '';
+              for (var j = result[i].terms.length - 1; j > 0; j--) {
+                result[i].region += result[i].terms[j].value + ' ';
+              }
+            }
             $scope.search.suggestions = result;
           }, function(status){
             $scope.search.error = "There was an error :( " + status;
