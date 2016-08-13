@@ -8,6 +8,7 @@ angular.module('CB2.controllers')
   saveFirst.placeNameForSave = '';
   saveFirst.locationBtnPlaceHolder = '어디인가요? 장소 이름을 직접 입력할 수 있습니다';
   saveFirst.gPlace = null;
+  saveFirst.location = {};
 
   saveFirst.calculatedHeight = DOMHelper.getImageHeight('view-container', 3, 5);
   console.info('saveFirst.calculatedHeight = ' + saveFirst.calculatedHeight);
@@ -50,8 +51,8 @@ angular.module('CB2.controllers')
 		var documentHeight = $(document).height();
 		var barHeight = document.getElementsByTagName('ion-header-bar')[0].clientHeight || 44;
     $('#map').css({
-			height: documentHeight
-        - barHeight
+			// height: documentHeight - barHeight
+      height: 200
 		});
     //  이거 꼭 해줘야 지도가 제대로 그려짐. (안그러면 걍 회색으로 나옴)
     // google.maps.event.trigger(map.mapObj, 'resize');
@@ -152,6 +153,22 @@ angular.module('CB2.controllers')
 
   function postPlace() {
     var deferred = $q.defer();
+    var pos = {};
+    var addrs = [null, null, null];
+
+    if (saveFirst.location.type === 'mauki') {
+      console.warn('채워 넣어야 함.');
+      return deferred.promise;
+    } else if (saveFirst.location.type === 'google'){
+      pos.lng = saveFirst.location.geometry.location.lng();
+      pos.lat = saveFirst.location.geometry.location.lat();
+
+      addrs[0] = saveFirst.location.formatted_address;
+    } else {
+      console.warn('Not supported.');
+      deferred.reject('Not supported.');
+      return deferred.promise;
+    }
 
 		//	브라우저의 경우 테스트를 위해 분기함
 		if (!ionic.Platform.isIOS() && !ionic.Platform.isAndroid()) {
@@ -177,18 +194,19 @@ angular.module('CB2.controllers')
       }
 
       RemoteAPIService.sendUserPost({
-				lonLat: {
-					lon: curPos.longitude,
-					lat: curPos.latitude
+        lonLat: {
+					lon: pos.lng,
+					lat: pos.lat
 				},
 				notes: [{
 					content: saveFirst.note
 				}],
 				images: uploadedImages,
-				addr1: { content: StorageService.get('addr1') || null },
-				addr2: { content: StorageService.get('addr2') || null },
-				addr3: { content: StorageService.get('addr3') || null },
-        name: { content: 'test' || null}
+				addr1: { content: addrs[0] || null },
+				addr2: { content: addrs[1] || null },
+				addr3: { content: addrs[2] || null },
+        // lps: [{ content: saveFirst.location.lps }],
+        name: { content: saveFirst.location.name }
 			})
 			.then(function(result) {
         console.debug(result);
@@ -204,7 +222,7 @@ angular.module('CB2.controllers')
     }, function(err) {
       console.error('이미지 업로드 실패', err);
       $ionicLoading.hide();
-			saveFirst.showAlert('이미지 업로드 실패', err);
+			showAlert('이미지 업로드 실패', err);
       deferred.reject();
     });
 
@@ -256,49 +274,15 @@ angular.module('CB2.controllers')
   };
 
   saveFirst.goNext = function() {
-    postPlace()
-    .then(function() {
-      $state.go('tab.saveSecond');
-    });
-
-  };
-
-  saveFirst.showLocationDlg = function() {
-    $ionicModal.fromTemplateUrl('views/home/modal-location.html', {
-			scope: $scope,
-			animation: 'slide-in-up'
-		})
-		.then(function(modal) {
-			saveFirst.locationDlg = modal;
-			saveFirst.locationDlg.show();
-      initAutocomplete();
-      fitMapToScreen();
-		});
-  };
-
-  saveFirst.closeLocationDlg = function() {
-    saveFirst.locationDlg.hide();
-    saveFirst.locationDlg.remove();
-  };
-
-  saveFirst.disableTap = function(){
-    // var container = document.getElementsByClassName('pac-container')[0];
-    // // disable ionic data tab
-    // angular.element(container).attr('data-tap-disabled', 'true');
-    // // leave input field if google-address-entry is selected
-    // angular.element(container).on('click', function(){
-    //     document.getElementById('pac-input').blur();
-    // });
-
-    console.log('disableTap');
-    var container = document.getElementsByClassName('pac-container');
-    // disable ionic data tab
-    angular.element(container).attr('data-tap-disabled', 'true');
-    // leave input field if google-address-entry is selected
-    angular.element(container).on("click", function(){
-      document.getElementById('pac-input').blur();
-      console.log('clicked');
-    });
+    if (saveFirst.location.name) {
+      console.log(saveFirst.location);
+      postPlace()
+      .then(function() {
+        $state.go('tab.saveSecond');
+      });
+    } else {
+      showAlert('죄송합니다', '장소명을 기입해 주세요');
+    }
   };
 
   //////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('CB2.controllers')
-.controller('saveSecondCtrl', ['$scope', '$ionicHistory', 'CacheService', 'PostHelper', 'RemoteAPIService', function($scope, $ionicHistory, CacheService, PostHelper, RemoteAPIService) {
+.controller('saveSecondCtrl', ['$scope', '$ionicHistory', '$cordovaClipboard', 'CacheService', 'PostHelper', 'RemoteAPIService', function($scope, $ionicHistory, $cordovaClipboard, CacheService, PostHelper, RemoteAPIService) {
   var saveSecond = this;
 
   //////////////////////////////////////////////////////////////////////////////

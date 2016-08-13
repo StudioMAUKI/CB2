@@ -5,13 +5,21 @@
 	  <button class="button button-icon icon-right button-clear ion-ios-arrow-right" ng-click="saveFirst.goNext()">다음</button>
 	</ion-header-bar>
 	<ion-content scroll="true" style="text-align:left">
+		<!-- 장소명 입력 폼 -->
 		<div class="row">
 			<div class="col">
-				<label class="item item-input">
-			    <input type="text" placeholder="이 사진과 장소에 대해 이야기해 주세요." ng-model="saveFirst.note">
-			  </label>
+				<div class="list">
+		      <!-- <label class="item item-input">
+		        <input type="text" placeholder="{{saveFirst.locationBtnPlaceHolder}}" location-suggestion location="saveFirst.location" ng-model="saveFirst.location.name">
+		      </label> -->
+					<a class="button button-stable button-full icon-left ion-ios-location" location-suggestion location="saveFirst.location">
+						<strong>{{saveFirst.location.name || saveFirst.locationBtnPlaceHolder}}</strong>
+						<small>{{saveFirst.location.formatted_address || ''}}</small>
+					</a>
+		    </div>
 			</div>
 		</div>
+
 		<div style="width:{{saveFirst.calculatedHeight+5}}px;height:{{saveFirst.calculatedHeight}}px;display:inline-block;overflow:hidden;padding-left:5px;margin-right:-4px;">
 			<img style="height:{{saveFirst.calculatedHeight}}px;" src="img/add_photo.svg" ng-click="saveFirst.addAttatchedImage()">
 		</div>
@@ -19,22 +27,25 @@
 			<img style="height:{{saveFirst.calculatedHeight}}px;" ng-src="{{image}}" on-hold="saveFirst.deleteAttatchedImage($index)">
 		</div>
 		<input type="file" file-model="saveFirst.browserFile" ng-show="saveFirst.showFileForm()">
-    <!-- <div class="row">
+
+		<!-- 지도 영역 -->
+		<div id="map" data-tap-disabled="true"></div>
+
+		<!-- 노트 영역 -->
+		<div class="row">
 			<div class="col">
 				<label class="item item-input">
-			    <input type="text" placeholder="어디인가요? 장소 이름을 직접 입력할 수 있습니다." ng-model="saveFirst.placeNameForSave" ng-click="saveFirst.showLocationDlg()">
+			    <input type="text" placeholder="이 사진과 장소에 대해 이야기해 주세요." ng-model="saveFirst.note">
 			  </label>
 			</div>
-		</div> -->
-    <a class="button button-stable button-full icon-left ion-ios-location" ng-click="saveFirst.showLocationDlg()">
-      {{saveFirst.locationBtnPlaceHolder}}
-    </a>
+		</div>
 
-		<div class="row">
+		<!-- 태그 영역 -->
+		<!-- <div class="row">
 			<div class="col place-tags-container">
 				<span class="place-item-tag-large" ng-repeat="tag in saveFirst.tags track by $index">{{tag}}&nbsp;</span>
 			</div>
-		</div>
+		</div> -->
 	</ion-content>
   <ion-footer-bar class="bar-positive">
     <small>다음을 누르면 이용약관, 개인정보보호방침, 위치기반서비스약관에 동의하게 됩니다.</small>

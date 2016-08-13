@@ -985,7 +985,7 @@ angular.module('CB2.services')
   //  ng-repeat안에서 함수가 호출되는 것을 최대한 방지하기 위해, 로딩된 포스트의 썸네일 URL, 전화번호, 주소, 태그 등을
   //  계산해서 속성으로 담아둔다.
   function decoratePost(post) {
-    var curPos = StorageService.get('curPos');
+    // var curPos = StorageService.get('curPos');
     post.name = getPlaceName(post);
     post.thumbnailURL = getThumbnailURLByFirstImage(post);
     post.datetime = getTimeString(post.modified);
@@ -1005,7 +1005,7 @@ angular.module('CB2.services')
     }
     //  서버로부터 받은 distance_from_origin은 질의때 보낸 좌표를 기준으로 한 거리이기 때문에
     //  현재 위치를 기준으로 다시 계산해야 한다.
-    post.distance_from_origin = getDistance(post, curPos);
+    // post.distance_from_origin = getDistance(post, curPos);
   }
 
   function decoratePosts(posts) {

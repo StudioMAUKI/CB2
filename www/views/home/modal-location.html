@@ -2,22 +2,26 @@
   <ion-header-bar class="bar-positive" align-title="center">
     <button class="button button-icon button-clear ion-ios-navigate-outline" ng-click="saveFirst.refreshPosition()"></button>
 		<h1 class="title">위치 지정</h1>
-    <button class="button button-clear" ng-click="saveFirst.closeLocationDlg()">취소</button>
+    <button class="button button-clear" ng-click="close()">취소</button>
 	</ion-header-bar>
   <ion-content scroll="false">
-    <!-- <div class="list">
+
+    <div class="list">
       <div class="item item-input-inset">
         <label class="item-input-wrapper">
-          <i class="icon ion-search placeholder-icon"></i>
-          <input type="text" id="autocomplete" placeholder="위치를 찾아보세요" ng-autocomplete ng-model="saveFirst.result1" />
+          <i class="icon ion-ios7-search placeholder-icon"></i>
+          <input type="search" ng-model="search.query" placeholder="Search">
         </label>
-        <button class="button button-small">
-          검색
-        </button>
       </div>
-      <div>result: {{saveFirst.result1}}</div>
-    </div> -->
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-focus="saveFirst.disableTap()">
-    <div id="map" data-tap-disabled="true"></div>
+      <ion-item ng-show="search.error">
+        {{search.error}}
+      </ion-item>
+      <ion-item ng-click="choosePlace({place_id:-1})">
+        현재 위치
+      </ion-item>
+      <ion-item ng-repeat="suggestion in search.suggestions" ng-click="choosePlace(suggestion)">
+        {{suggestion.description}}
+      </ion-item>
+    </div>
 	</ion-content>
 </ion-modal-view>
