@@ -72,7 +72,11 @@ angular.module('CB2.controllers')
     $('#pac-input').css({
       width: $(document).width() - 24
     });
-    var searchBox = new google.maps.places.SearchBox(input);
+    // var searchBox = new google.maps.places.SearchBox(input);
+    var options = { //options for autocomplete object
+      types: ['geocode']
+    };
+    var searchBox = new google.maps.places.Autocomplete(input, options);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     // Bias the SearchBox results towards current map's viewport.
@@ -278,12 +282,22 @@ angular.module('CB2.controllers')
   };
 
   saveFirst.disableTap = function(){
-    var container = document.getElementsByClassName('pac-container')[0];
+    // var container = document.getElementsByClassName('pac-container')[0];
+    // // disable ionic data tab
+    // angular.element(container).attr('data-tap-disabled', 'true');
+    // // leave input field if google-address-entry is selected
+    // angular.element(container).on('click', function(){
+    //     document.getElementById('pac-input').blur();
+    // });
+
+    console.log('disableTap');
+    var container = document.getElementsByClassName('pac-container');
     // disable ionic data tab
     angular.element(container).attr('data-tap-disabled', 'true');
     // leave input field if google-address-entry is selected
-    angular.element(container).on('click', function(){
-        document.getElementById('pac-input').blur();
+    angular.element(container).on("click", function(){
+      document.getElementById('pac-input').blur();
+      console.log('clicked');
     });
   };
 

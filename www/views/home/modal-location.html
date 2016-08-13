@@ -9,13 +9,13 @@
       <div class="item item-input-inset">
         <label class="item-input-wrapper">
           <i class="icon ion-search placeholder-icon"></i>
-          <input type="text" placeholder="위치를 찾아보세요">
-          <ion-google-place placeholder="Enter an address, Apt# and ZIP" ng-model="location" />
+          <input type="text" id="autocomplete" placeholder="위치를 찾아보세요" ng-autocomplete ng-model="saveFirst.result1" />
         </label>
         <button class="button button-small">
           검색
         </button>
       </div>
+      <div>result: {{saveFirst.result1}}</div>
     </div> -->
     <input id="pac-input" class="controls" type="text" placeholder="Search Box" ng-focus="saveFirst.disableTap()">
     <div id="map" data-tap-disabled="true"></div>

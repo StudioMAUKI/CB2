@@ -127,6 +127,11 @@ $light: #ffffff;
   }
   .card {
     margin: 0 0 20px 0;
+
+    .button.button-full {
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
   }
   .profile-banner {
     background-image: url(http://ioniconf.com/img/bg.jpg);

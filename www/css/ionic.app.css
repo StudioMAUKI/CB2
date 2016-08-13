@@ -83,6 +83,9 @@ $dark:                            #444 !default;
     color: #444; }
   .body-tumblr .card {
     margin: 0 0 20px 0; }
+    .body-tumblr .card .button.button-full {
+      margin-top: 0px;
+      margin-bottom: 0px; }
   .body-tumblr .profile-banner {
     background-image: url(http://ioniconf.com/img/bg.jpg);
     background-position: center center;
@@ -9956,16 +9959,3 @@ a.button {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300; }
-
-.ion-google-place-container {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 20;
-  display: none; }
-
-input.ion-google-place[readonly] {
-  background-color: transparent;
-  cursor: text; }
