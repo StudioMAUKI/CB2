@@ -6,7 +6,8 @@ angular.module('CB2.controllers')
   saveFirst.attatchedImages = [];
   saveFirst.note = '';
   saveFirst.placeNameForSave = '';
-  saveFirst.locationBtnPlaceHolder = '어디인가요? 장소 이름을 직접 입력할 수 있습니다';
+  saveFirst.placeholderTitle = '어디인가요?';
+  saveFirst.placeholderSubTitle = '장소 이름을 입력하세요';
   saveFirst.gPlace = null;
   saveFirst.location = {};
 

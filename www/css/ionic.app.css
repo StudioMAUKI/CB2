@@ -69,6 +69,9 @@ $dark:                            #444 !default;
     .body-tumblr .item *,
     .body-tumblr .item-complex .item-content * {
       color: #445569; }
+    .body-tumblr .item .icon,
+    .body-tumblr .item-complex .item-content .icon {
+      color: #ffffff; }
   .body-tumblr .item.active,
   .body-tumblr .item.activated,
   .body-tumblr .item-complex.active .item-content,

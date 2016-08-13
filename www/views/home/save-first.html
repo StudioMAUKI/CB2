@@ -9,12 +9,9 @@
 		<div class="row">
 			<div class="col">
 				<div class="list">
-		      <!-- <label class="item item-input">
-		        <input type="text" placeholder="{{saveFirst.locationBtnPlaceHolder}}" location-suggestion location="saveFirst.location" ng-model="saveFirst.location.name">
-		      </label> -->
-					<a class="button button-stable button-full icon-left ion-ios-location" location-suggestion location="saveFirst.location">
-						<strong>{{saveFirst.location.name || saveFirst.locationBtnPlaceHolder}}</strong>
-						<small>{{saveFirst.location.formatted_address || ''}}</small>
+		      <a class="button button-stable button-full icon-left ion-ios-location" location-suggestion location="saveFirst.location" style="height:32px;text-align:left;">
+						<strong>{{saveFirst.location.name || saveFirst.placeholderTitle}}</strong>
+						<small>{{saveFirst.location.formatted_address || saveFirst.placeholderSubTitle}}</small>
 					</a>
 		    </div>
 			</div>
