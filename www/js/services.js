@@ -339,7 +339,7 @@ angular.module('CB2.services', [])
     }
   };
 })
-.directive('locationSuggestion', function($ionicModal, LocationService){
+.directive('locationSuggestion', function($ionicModal, LocationService, StorageService){
   return {
     restrict: 'A',
     scope: {
@@ -349,7 +349,7 @@ angular.module('CB2.services', [])
       console.log('locationSuggestion started!');
       $scope.search = {};
       $scope.search.suggestions = [];
-      $scope.search.query = "";
+      $scope.search.query = '';
       $ionicModal.fromTemplateUrl('views/home/modal-location.html', {
         scope: $scope,
         focusFirstInput: true
@@ -363,7 +363,7 @@ angular.module('CB2.services', [])
         if (newValue) {
           LocationService.searchAddress(newValue)
           .then(function(result) {
-            console.log('suggestions', result);
+            // console.log('suggestions', result);
             $scope.search.error = null;
             for (var i = 0; i < result.length ; i++) {
               result[i].name = result[i].terms[0].value;
@@ -374,7 +374,8 @@ angular.module('CB2.services', [])
             }
             $scope.search.suggestions = result;
           }, function(status){
-            $scope.search.error = "There was an error :( " + status;
+            console.error('There was an error :( ' + status)
+            $scope.search.error = newValue;
           });
         };
         $scope.open = function() {
@@ -393,13 +394,129 @@ angular.module('CB2.services', [])
               $scope.close();
             });
           } else {
+            console.log($scope.search.query);
+            $scope.location = {};
             $scope.location.type = 'mauki';
-            $scope.location.name = '현재 위치';
+            $scope.location.name = $scope.search.query;
             $scope.location.lps = null;
+            $scope.location.formatted_address = StorageService.get('addr1') || StorageService.get('addr2') || StorageService.get('addr3') || '주소 없음';
             $scope.close();
           }
         };
       });
     }
   }
-});
+})
+.factory('MapService', ['$q', 'StorageService', function($q, StorageService) {
+  var pos = { latitude: 0.0, longitude: 0.0 };
+  var warchID = null;
+
+  function getCurrentPosition() {
+    return $q(function(resolve, reject) {
+      // console.info('in MapService.getCurrentPosition()');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          pos.latitude = position.coords.latitude;
+          pos.longitude = position.coords.longitude;
+          StorageService.set('curPos', pos);
+          console.info('Original position is (' + pos.latitude + ', ' + pos.longitude + ').');
+
+          resolve(pos);
+        }, function(err) {
+          console.error('MapService.getCurrentPosition() is failed.');
+          console.dir(err);
+          // PositionError
+          // code:3
+          // message:"Timeout expired"
+          // __proto__:
+          // PositionError
+          // 	PERMISSION_DENIED:1
+          // 	POSITION_UNAVAILABLE:2
+          // 	TIMEOUT:3
+          pos.latitude = 37.403425;
+          pos.longitude = 127.105783;
+
+          resolve(pos);
+        }, {
+          timeout: 5000,
+          enableHighAccuracy: true,
+          maximumAge: 30000
+        });
+      } else {
+        reject('Browser doesn\'t support Geolocation');
+      }
+    });
+  };
+
+  function watchCurrentPosition(success, fail) {
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(function(position) {
+        pos.latitude = position.coords.latitude;
+        pos.longitude = position.coords.longitude;
+        StorageService.set('curPos', pos);
+        console.info('Changed position is (' + pos.latitude + ', ' + pos.longitude + ').');
+
+        success(pos);
+      }, function(err) {
+        console.error('MapService.watchCurrentPosition() is failed.');
+        console.dir(err);
+        fail(err);
+      }, {
+        timeout: 5000
+        // enableHighAccuracy: true
+      });
+    } else {
+      return -1;
+    }
+  }
+
+  function clearWatch() {
+    if (watchID != null) {
+      if (navigator.geolocation) {
+        navigator.geolocation.clearWatch(watchID);
+      }
+    }
+  }
+
+  function getCurrentAddress(latitude, longitude, saveAddr) {
+    var deferred = $q.defer();
+    if (saveAddr === null || saveAddr === undefined) {
+      saveAddr = true;
+    }
+
+    var geocoder = new daum.maps.services.Geocoder();
+    geocoder.coord2detailaddr(
+      new daum.maps.LatLng(latitude, longitude),
+      function(status, result) {
+        // console.dir(status);
+        // console.dir(result);
+        if (status === daum.maps.services.Status.OK) {
+          if (result[0]) {
+            console.info('Current Address is ' + result[0].jibunAddress.name + '.');
+            if (saveAddr) {
+              StorageService.set('addr1', result[0].roadAddress.name);
+        			StorageService.set('addr2', result[0].jibunAddress.name);
+        			StorageService.set('addr3', result[0].region);
+            }
+            deferred.resolve(result[0]);
+          } else {
+            console.warn('Geocoder results are not found.');
+            deferred.reject(status);
+          }
+        } else {
+          console.error('Geocoder failed due to: ' + status);
+          deferred.reject(status);
+        }
+      }
+    );
+
+    return deferred.promise;
+  }
+
+  return {
+    getCurrentPosition: getCurrentPosition,
+    getCurrentAddress: getCurrentAddress,
+    watchCurrentPosition: watchCurrentPosition,
+    clearWatch: clearWatch
+  };
+}]);

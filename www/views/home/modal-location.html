@@ -13,11 +13,11 @@
           <input type="search" ng-model="search.query" placeholder="Search">
         </label>
       </div>
-      <ion-item ng-show="search.error">
-        {{search.error}}
-      </ion-item>
+      <!-- <ion-item ng-show="search.error" ng-click="choosePlace({place_id:-1})">
+        {{search.error}} (탭하여 저장)
+      </ion-item> -->
       <ion-item ng-click="choosePlace({place_id:-1})">
-        현재 위치
+        {{search.query}} 
       </ion-item>
       <ion-item ng-repeat="suggestion in search.suggestions" ng-click="choosePlace(suggestion)">
         <!-- {{suggestion.description}} -->

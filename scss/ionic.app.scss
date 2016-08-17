@@ -24,6 +24,7 @@ $calm: #519ec8 !default;
 $dark-positive: #445569;
 $extra-dark: #2e3f53;
 $light: #ffffff;
+$pk-accent: #FFC107;
 
 //Global Body class
 .body-tumblr {
@@ -99,6 +100,10 @@ $light: #ffffff;
   .popup .popup-body {
     color: $dark-positive;
   }
+  //ActionSheet
+  .action-sheet {
+    color: $dark-positive;
+  }
   //Lists and Items
   .item,
   .item-complex .item-content {
@@ -107,11 +112,20 @@ $light: #ffffff;
     text-align: left;
     border-color: $dark-positive;
     * {
-      // color: $light;
+      color: $light;
+      // color: $dark-positive;
+    }
+    // .icon {
+    //   color: $light;
+    // }
+    h2 {
+      font-weight: bold;
+    }
+    input {
       color: $dark-positive;
     }
-    .icon {
-      color: $light;
+    .place-star-point i{
+      color: $pk-accent;
     }
   }
   .item.active,
@@ -184,7 +198,6 @@ $light: #ffffff;
     }
   }
 }
-
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";

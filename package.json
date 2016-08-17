@@ -28,7 +28,8 @@
       "id": "com.verso.cordova.clipboard"
     },
     "cordova-plugin-file",
-    "cordova-plugin-file-transfer"
+    "cordova-plugin-file-transfer",
+    "cordova-plugin-geolocation"
   ],
   "cordovaPlatforms": [
     "android",

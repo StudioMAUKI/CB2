@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('CB2.controllers')
-.controller('saveFirstCtrl', ['$scope', '$q', '$ionicPopup', '$ionicHistory', '$state', '$ionicModal', '$ionicActionSheet', '$ionicLoading', 'PhotoService', 'DOMHelper', 'StorageService', 'CacheService', 'RemoteAPIService', function($scope, $q, $ionicPopup, $ionicHistory, $state, $ionicModal, $ionicActionSheet, $ionicLoading, PhotoService, DOMHelper, StorageService, CacheService, RemoteAPIService) {
+.controller('saveFirstCtrl', ['$scope', '$q', '$ionicPopup', '$ionicHistory', '$state', '$ionicModal', '$ionicActionSheet', '$ionicLoading', 'PhotoService', 'DOMHelper', 'StorageService', 'CacheService', 'RemoteAPIService', 'MapService', function($scope, $q, $ionicPopup, $ionicHistory, $state, $ionicModal, $ionicActionSheet, $ionicLoading, PhotoService, DOMHelper, StorageService, CacheService, RemoteAPIService, MapService) {
   var saveFirst = this;
   saveFirst.attatchedImages = [];
   saveFirst.note = '';
@@ -58,14 +58,24 @@ angular.module('CB2.controllers')
     // google.maps.event.trigger(map.mapObj, 'resize');
 	}
 
-  function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 37.5666103, lng: 126.9783882},
+  function initMap(pos) {
+    pos = pos || {
+      latitude: 37.5666103,
+      longitude: 126.9783882
+    };
+    saveFirst.map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: pos.latitude, lng: pos.longitude},
       zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       zoomControl: false,
   		mapTypeControl: false,
   		streetViewControl: false
+    });
+    saveFirst.curMarker = new google.maps.Marker({
+      map: saveFirst.map,
+      position: { lat: pos.latitude, lng: pos.longitude },
+      draggable: true,
+      zIndex: 9999
     });
 
     var markers = [];
@@ -80,44 +90,55 @@ angular.module('CB2.controllers')
         return;
       }
 
-      // Clear out the old markers.
-      markers.forEach(function(marker) {
-        marker.setMap(null);
-      });
-      markers = [];
-
-      // For each place, get the icon, name and location.
-      var bounds = new google.maps.LatLngBounds();
-      var icon = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-
-      // Create a marker for each place.
-      markers.push(new google.maps.Marker({
-        map: map,
-        icon: icon,
-        title: place.name,
-        position: place.geometry.location
-      }));
-
-      if (place.geometry.location) {
-        console.debug('lat', place.geometry.location.lat());
-        console.debug('lng', place.geometry.location.lng());
+      if (place.type === 'mauki') {
         setTimeout(function(){
-          map.setZoom(15);
+          saveFirst.map.setZoom(15);
           setTimeout(function() {
-            map.setCenter({
-              lat: place.geometry.location.lat(),
-              lng: place.geometry.location.lng()
+            saveFirst.map.setCenter({
+              lat: pos.latitude,
+              lng: pos.longitude
             });
           }, 100);
         }, 100);
+      } else {
+        // Clear out the old markers.
+        markers.forEach(function(marker) {
+          marker.setMap(null);
+        });
+        markers = [];
+
+        // For each place, get the icon, name and location.
+        var bounds = new google.maps.LatLngBounds();
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: saveFirst.map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        if (place.geometry.location) {
+          setTimeout(function(){
+            saveFirst.map.setZoom(15);
+            setTimeout(function() {
+              saveFirst.map.setCenter({
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng()
+              });
+            }, 100);
+          }, 100);
+        }
       }
-      // map.fitBounds(bounds);
+
+      // saveFirst.map.fitBounds(bounds);
     });
     // [END region_getplaces]
   }
@@ -129,7 +150,12 @@ angular.module('CB2.controllers')
 
     if (saveFirst.location.type === 'mauki') {
       console.warn('채워 넣어야 함.');
-      return deferred.promise;
+      var curPos = StorageService.get('curPos');
+      pos.lng = curPos.longitude;
+      pos.lat = curPos.latitude;
+      addrs[0] = StorageService.get('addr1');
+      addrs[1] = StorageService.get('addr2');
+      addrs[2] = StorageService.get('addr3');
     } else if (saveFirst.location.type === 'google'){
       pos.lng = saveFirst.location.geometry.location.lng();
       pos.lat = saveFirst.location.geometry.location.lat();
@@ -158,7 +184,6 @@ angular.module('CB2.controllers')
     }
     $q.all(tasksOfUploadingImages)
     .then(function(results) {
-      var curPos = StorageService.get('curPos');
       var uploadedImages = [];
       for (var i = 0; i < results.length; i++) {
         uploadedImages.push({content: results[i].url});
@@ -282,8 +307,21 @@ angular.module('CB2.controllers')
     } else {
       console.info('이전 뷰가 홈뷰가 아니었으므로, 카메라나 앨범을 새로 열지 않았음.');
     }
-    fitMapToScreen();
-    initMap();
+
+    var div = document.getElementById('map').innerHTML = '현재 위치를 얻어오는 중입니다';
+    MapService.getCurrentPosition()
+    .then(function(pos) {
+      MapService.getCurrentAddress(pos.latitude, pos.longitude)
+      .then(function() {
+        fitMapToScreen();
+        initMap(pos);
+      }, function(err) {
+        console.error('현재 위치에 대한 주소 얻기 실패.');
+      })
+    }, function(err) {
+      console.error(err);
+      var div = document.getElementById('map').innerHTML = '현재 위치를 얻어오지 못했습니다';
+    });
 		// console.info('The View History', $ionicHistory.viewHistory());
 	});
 }]);

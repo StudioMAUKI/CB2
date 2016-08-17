@@ -60,6 +60,8 @@ $dark:                            #444 !default;
     color: #2e3f53; }
   .body-tumblr .popup .popup-body {
     color: #445569; }
+  .body-tumblr .action-sheet {
+    color: #445569; }
   .body-tumblr .item,
   .body-tumblr .item-complex .item-content {
     background: #36465d;
@@ -68,10 +70,16 @@ $dark:                            #444 !default;
     border-color: #445569; }
     .body-tumblr .item *,
     .body-tumblr .item-complex .item-content * {
-      color: #445569; }
-    .body-tumblr .item .icon,
-    .body-tumblr .item-complex .item-content .icon {
       color: #ffffff; }
+    .body-tumblr .item h2,
+    .body-tumblr .item-complex .item-content h2 {
+      font-weight: bold; }
+    .body-tumblr .item input,
+    .body-tumblr .item-complex .item-content input {
+      color: #445569; }
+    .body-tumblr .item .place-star-point i,
+    .body-tumblr .item-complex .item-content .place-star-point i {
+      color: #FFC107; }
   .body-tumblr .item.active,
   .body-tumblr .item.activated,
   .body-tumblr .item-complex.active .item-content,
