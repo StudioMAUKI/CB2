@@ -357,6 +357,7 @@ angular.module('CB2.services', [])
         $scope.modal = modal;
       });
       element[0].addEventListener('click', function(event) {
+        $scope.search.query = '';
         $scope.open();
       });
       $scope.$watch('search.query', function(newValue) {
