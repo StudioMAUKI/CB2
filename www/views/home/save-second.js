@@ -46,7 +46,7 @@ angular.module('CB2.controllers')
         saveSecond.shorten_url = '';
       })
     } else {
-      saveSecond.shorten_url = url;
+      saveSecond.shorten_url = saveSecond.post.shorten_url;
       copyURLToClipboard(saveSecond.post.shorten_url);
     }
 	});
