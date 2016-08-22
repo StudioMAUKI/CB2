@@ -178,8 +178,27 @@ angular.module('CB2.services', [])
               }
             } catch (e) {
               console.error('The data in storage is broken.');
-              inited = false;
-              deferred.reject(e.message);
+              //  이 경우 파일의 내용이 깨져서 JSON parsing이 안되는 경우이다.
+              //  현재로썬 깔끔하게 지우고 다시 시작하는 것이 최선..
+              $cordovaFile.removeFile(cordova.file.dataDirectory, storageFileName)
+              .then(function() {
+                $cordovaFile.createFile(cordova.file.dataDirectory, storageFileName, true)
+                .then(function (success) {
+                  console.log('New StorageFile have been created.');
+                  inited = true;
+                  dicSaved = {};
+                  deferred.resolve();
+                }, function (err) {
+                  console.error('Cannot create the storage file.');
+                  console.dir(err);
+                  inited = false;
+                  dicSaved = {};
+                  deferred.reject(err);
+                });
+              }, function(err) {
+                inited = false;
+                deferred.reject(err);
+              });
             }
 
           }, function (error) {
@@ -357,7 +376,6 @@ angular.module('CB2.services', [])
         $scope.modal = modal;
       });
       element[0].addEventListener('click', function(event) {
-        $scope.search.query = '';
         $scope.open();
       });
       $scope.$watch('search.query', function(newValue) {
@@ -400,7 +418,7 @@ angular.module('CB2.services', [])
             $scope.location.type = 'mauki';
             $scope.location.name = $scope.search.query;
             $scope.location.lps = null;
-            $scope.location.formatted_address = StorageService.get('addr1') || StorageService.get('addr2') || StorageService.get('addr3') || '주소 없음';
+            $scope.location.formatted_address = StorageService.get('addr1') || StorageService.get('addr2') ||
             $scope.close();
           }
         };
