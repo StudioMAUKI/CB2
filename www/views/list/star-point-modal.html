@@ -1,0 +1,33 @@
+<ion-modal-view>
+	<ion-header-bar class="bar-positive" align-title="center">
+		<button class="button button-icon button-clear ion-close" ng-click="place.closeModal()"></button>
+	  <h1 class="title">이 장소는 몇 점입니까?</h1>
+	  <button class="button button-icon button-clear ion-checkmark" ng-click="place.confirmStarPoint()"></button>
+	</ion-header-bar>
+	<ion-content>
+    <div class="row">
+      <div class="col"></div>
+    </div>
+    <div class="row">
+      <div class="col star-point">
+        {{place.starPoint /2.0}}
+      </div>
+    </div>
+    <div class="row star-point">
+      <div class="col">
+      </div>
+      <div class="col" ng-repeat="icon in place.starPointIcons track by $index">
+        <i class="{{icon}}"></i>
+      </div>
+      <div class="col">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="range range-positive">
+          <input type="range" name="volume" min="0" max="10" value="5" ng-model="place.starPoint" ng-change="place.changeStarPoint()">
+        </div>
+      </div>
+    </div>
+	</ion-content>
+</ion-modal-view>

@@ -14,7 +14,7 @@
 			<div class="item">
 				<div class="list card">
 				  <div class="item item-image">
-				    <img ng-src="{{saveSecond.post.placePost.images[0].summary}}">
+				    <img ng-src="{{saveSecond.post.userPost.images[0].summary}}">
 				  </div>
 				  <a class="item item-icon-left assertive" href="#">
 				    <i class="icon ion-ios-location-outline"></i>
@@ -22,8 +22,11 @@
 				  </a>
 				</div>
 			</div>
-			<div class="item item-icon-left item-divider">
-				<i class="icon ion-clipboard"></i>클립보드에 링크가 복사 되었습니다!
+			<div class="item item-icon-left item-button-right">
+				<i class="icon ion-clipboard"></i>{{saveSecond.clipboardMsg}}
+				<button class="button button-positive" ng-click="saveSecond.copyAgain()">
+		      <i class="icon ion-ios-redo"></i>
+		    </button>
 			</div>
 			<div class="item">
 				<div class="card">

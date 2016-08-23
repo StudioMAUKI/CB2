@@ -68,9 +68,6 @@ $dark:                            #444 !default;
     color: #ffffff;
     text-align: left;
     border-color: #445569; }
-    .body-tumblr .item *,
-    .body-tumblr .item-complex .item-content * {
-      color: #ffffff; }
     .body-tumblr .item h2,
     .body-tumblr .item-complex .item-content h2 {
       font-weight: bold; }

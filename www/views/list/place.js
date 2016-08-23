@@ -412,11 +412,9 @@ angular.module('CB2.controllers')
   };
 
   place.copyURLToClipboard = function(url) {
-    var emailID = PKAuthStorageService.get('email').split('@')[0];
-    var msgAndUrl = emailID + '님이 [' + place.post.name + ']의 사진과 장소를 공유했습니다. ' + url;
-    console.info(msgAndUrl);
+    console.info(url);
     if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
-      $cordovaClipboard.copy(msgAndUrl)
+      $cordovaClipboard.copy(url)
       .then(function(result) {
         console.log('Copying URL was successed.', url);
         $ionicPopup.alert({
@@ -622,12 +620,12 @@ angular.module('CB2.controllers')
 
   place.setStarPoint = function() {
     console.log('setStarPoint');
-    place.showModal('places/star-point-modal.html');
+    place.showModal('views/list/star-point-modal.html');
   };
 
   place.showTagCloud = function() {
     console.log('showTagCloud');
-    place.showModal('places/tag-cloud-modal.html');
+    place.showModal('views/list/tag-cloud-modal.html');
   }
 
   place.onTapStarPoint = function(event) {

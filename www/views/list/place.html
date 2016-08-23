@@ -63,7 +63,7 @@
 		<div class="button-bar bar-stable">
 			<a class="button" ng-click="place.addNote()"><i class="ion-chatbox"></i> 댓글</a>
 			<a class="button" ng-click="place.addURL()"><i class="ion-link"></i> 링크추가</a>
-			<a class="button" ng-click="place.copyURL()"><i class="ion-android-share-alt"></i> URL복사</a>
+			<a class="button" ng-click="place.copyURL()"><i class="ion-android-share-alt"></i> 공유</a>
 			<!-- <a class="button" ng-click="place.setStarPoint()"><i class="ion-star"></i> 평가</a> -->
 		</div>
 		<div class="user-image">
@@ -124,12 +124,12 @@
 			<a class="button button-assertive button-outline" ng-click="place.deletePlace()">내 장소에서 삭제</a>
 		</div>
 	</ion-content>
-	<ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
+	<!-- <ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
     <div id="container" class="list list-inset">
       <label id="rounded" class="item item-input chat-input">
         <img src="http://image005.flaticon.com/1/png/512/1/1533.png" height="20px">&nbsp;&nbsp;
         <input type="text" placeholder="태그를 입력하세요" ng-focus="scrollTop()" ng-keydown="place.processTags($event)" ng-model="place.tag">
       </label>
     </div>
-  </ion-footer-bar>
+  </ion-footer-bar> -->
 </ion-view>

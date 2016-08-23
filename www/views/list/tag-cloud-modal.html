@@ -1,0 +1,17 @@
+<ion-modal-view>
+	<ion-header-bar class="pk-primary" align-title="center">
+		<h1 class="title">연관 태그</h1>
+	  <button class="button button-icon button-clear ion-checkmark" ng-click="place.closeModal()"></button>
+	</ion-header-bar>
+	<ion-content>
+    <div class="button {{tag.color}} button-outline icon-right ion-ios-close-outline" style="margin:5px;" ng-repeat="tag in place.post.userPost.tags track by $index" ng-click="place.deleteTag($index)">#{{tag.content}}</div>
+	</ion-content>
+  <ion-footer-bar keyboard-attach class="bar-stable item-input-inset">
+    <div id="container" class="list list-inset">
+      <label id="rounded" class="item item-input chat-input">
+        <img src="http://image005.flaticon.com/1/png/512/1/1533.png" height="20px">&nbsp;&nbsp;
+        <input type="text" placeholder="태그를 입력하세요" ng-focus="scrollTop()" ng-keydown="place.processTags($event)" ng-model="place.tag">
+      </label>
+    </div>
+  </ion-footer-bar>
+</ion-modal-view>
