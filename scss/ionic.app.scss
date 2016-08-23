@@ -25,6 +25,8 @@ $dark-positive: #445569;
 $extra-dark: #2e3f53;
 $light: #ffffff;
 $pk-accent: #FFC107;
+$pk-light-primary: #CFD8DC;
+$pk-text-color: #FFFFFF;
 
 //Global Body class
 .body-tumblr {
@@ -202,3 +204,4 @@ $pk-accent: #FFC107;
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 @import "www/views/home/style";
+@import "www/views/list/style";
