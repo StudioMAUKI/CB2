@@ -1,14 +1,9 @@
 <ion-view>
-	<ion-header-bar class="pk-dark-primary" align-title="center">
+	<ion-header-bar class="bar-positive" align-title="center">
 		<div class="buttons">
-	    <button class="button-clear button-icon ion-ios-arrow-left ion-arrow-left pk-dark-primary" ng-click="place.goBack()" nav-direction="back"></button>
+	    <button class="button button-clear button-icon ion-ios-arrow-left" ng-click="place.goBack()" nav-direction="back"></button>
 		</div>
 		<h2 class="title">{{place.post.name || '등록 대기중'}}</h2>
-		<div class="buttons">
-			<!-- <button class="button-clear button-icon ion-share pk-primary" ng-click=""></button> -->
-	    <!-- <button class="button-clear button-icon ion-ios-trash-outline pk-dark-primary" ng-click="place.deletePlace()"></button> -->
-			<button class="button-clear button-icon ion-map pk-dark-primary" ng-click="place.goToMap(place.post.lonLat)"></button>
-		</div>
 	</ion-header-bar>
 	<ion-content class="post-container"  overflow-scroll='false' delegate-handle="userDetailContent" on-scroll="place.onUserDetailContentScroll()" header-shrink scroll-event-interval="5">
 		<!-- placePost 영역 -->

@@ -155,7 +155,7 @@ angular.module('CB2.controllers')
     var history = $ionicHistory.viewHistory();
     // console.dir(history);
     if (history.backView === null || history.backView.stateName === 'tab.map') {
-      $state.go('tab.home-places');
+      $state.go('tab.list');
     } else {
       $ionicHistory.goBack();
     }
