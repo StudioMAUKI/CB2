@@ -1040,4 +1040,185 @@ angular.module('CB2.services')
     calcDistance: calcDistance,
     getReadablePhoneNo: getReadablePhoneNo
   }
+}])
+.factory('ogParserService', ['$http', '$q', function($http, $q) {
+
+  function getHead(doc) {
+    var headStart = '<head';
+    var headEnd = '</head>';
+    var start = doc.indexOf(headStart);
+    var end = doc.indexOf(headEnd);
+
+    if (start === -1) {
+      console.error('cannot find <head> in document.');
+      return '';
+    } else {
+      // start += 6;
+      // console.log('start point : ' + start);
+    }
+    if (end === -1) {
+      console.error('cannot find </head> in document.');
+      return '';
+    } else {
+      end += headEnd.length;
+      // console.log('end point : ' + end);
+    }
+    return doc.slice(start, end);
+  }
+
+  function getOGContent(head, property) {
+    var start = head.indexOf(property);
+    var content = 'content=';
+    var end = 0;
+    if (start === -1) {
+      console.warn('cannot find ' + property + '.');
+      return '';
+    } else {
+      // console.log('start index of ' + property + ' : ' + start);
+      start = head.indexOf(content, start);
+      if (start === -1) {
+        console.warn('cannot find content in ' + property);
+        return '';
+      } else {
+        start += content.length + 1;
+        // console.log('This web-doc uses ' + head.charAt(start));
+        if (head.charAt(start - 1) === '"') {
+          end = head.indexOf('"', start);
+        } else {
+          end = head.indexOf('\'', start);
+        }
+
+        if (end === -1) {
+          console.warn('cannot find another "(or \') in content in ' + property);
+          return '';
+        } else {
+          // console.log('end index of ' + property + ' : ' + end);
+          return head.slice(start, end);
+        }
+      }
+    }
+  }
+
+  function convertToSaveURL(url) {
+    if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+      //  http://blog.naver.com/PostView.nhn?blogId=hyeyooncheon&logNo=220534224926&redirect=Dlog&widgetTypeCall=true
+      //  http://m.blog.naver.com/PostView.nhn?blogId=hyeyooncheon&logNo=220534224926
+
+      //  네이버 블로그의 경우 모바일에서 접근할 때 리다이렉션을 위한 자바스크립트만 내려주고, 다시 이동시키기 때문에
+      //  아예 이동될 페이지의 URL로 고쳐서 직접 접근하도록 한다.
+      if (url.indexOf('http://blog.naver.com') !== -1) {
+        return url.replace('&redirect=Dlog', '').replace('&widgetTypeCall=true', '').replace('blog.naver.com', 'm.blog.naver.com');
+      } else {
+        return url;
+      }
+    } else {
+      if (url.indexOf('place.kakao.com') !== -1) {
+        return url.replace('https://place.kakao.com', '/kplaces');
+      } else if (url.indexOf('http://blog.naver.com') !== -1) {
+        if (url.indexOf('PostView.nhn') !== -1) {
+          return url.replace('http://blog.naver.com', '/nblog');
+        } else if (/http:\/\/blog.naver.com\/[a-z]+\/[1-9][0-9]+/.exec(url).length === 1){
+          var params = url.replace('http://blog.naver.com/', '').split('/');
+          return '/nblog/PostView.nhn?blogId=' + params[0] + '&logNo=' + params[1];
+        } else {
+          return '';
+        }
+      } else if (url.indexOf('http://m.blog.naver.com') !== -1) {
+        return url.replace('http://m.blog.naver.com', '/nmblog');
+      } else if (url.indexOf('http://www.mangoplate.com') !== -1) {
+        return url.replace('https://www.mangoplate.com', '/mplate');
+      } else if (url.indexOf('http://map.naver.com') !== -1) {
+        return url.replace('http://map.naver.com', '/nmap');
+      } else {
+        return '';
+      }
+    }
+  }
+
+  function getOGInfo(url) {
+    var deferred = $q.defer();
+    var ogInfo = {};
+    var convertedURL = '';
+
+    convertedURL = convertToSaveURL(url);
+    console.log('Original URL : ' + url);
+    console.log('Converted URL : ' + convertedURL);
+    if (convertedURL === '') {
+      console.warn('not supported URL pattern.');
+      ogInfo.title = '브라우저에서 지원하지 않는 URL';
+      ogInfo.image = '/img/icon/404.png';
+      ogInfo.siteName = 'Placekoop Error';
+      ogInfo.url = '';
+      ogInfo.desc = '폰에서도 이러면 진짜 에러임';
+
+      // console.dir(ogInfo);
+
+      deferred.resolve(ogInfo);
+    } else {
+      $http({
+        method: 'GET',
+        url: convertedURL
+      })
+      .then(function(response) {
+        // console.dir(response);
+        var head = getHead(response.data);
+        // console.log(head);
+        if (head === '') {
+          console.error('does not exist <head>...</head>');
+          deferred.reject('does not exist <head>...</head>');
+          return;
+        } else {
+          ogInfo.title = getOGContent(head, 'og:title');
+          ogInfo.image = getOGContent(head, 'og:image');
+          ogInfo.siteName = getOGContent(head, 'og:site_name');
+          ogInfo.url = getOGContent(head, 'og:url') || url;
+          ogInfo.desc = getOGContent(head, 'og:description');
+
+          console.dir(ogInfo);
+
+          deferred.resolve(ogInfo);
+        }
+      }, function(err) {
+        console.error(err);
+        deferred.reject(err);
+      });
+    }
+
+    return deferred.promise;
+  }
+
+  return {
+    getOGInfo: getOGInfo
+  }
+}])
+.factory('daumSearchService', ['$q', '$http', function($q, $http) {
+  function convertToSaveURL(url) {
+    if (ionic.Platform.isIOS() || ionic.Platform.isAndroid()) {
+      return url;
+    } else {
+      return url.replace('https://apis.daum.net', '/daum');
+    }
+  }
+
+  function search(keyword) {
+    var deferred = $q.defer();
+
+    $http({
+      method: 'GET',
+      url: convertToSaveURL('https://apis.daum.net/search/blog?apikey=f4e2c3f6c532baf54ec80e81f08fc1a1&q=' + keyword + '&output=json')
+    })
+    .then(function(response) {
+      // console.dir(response.data);
+      deferred.resolve(response.data.channel.item);
+    }, function(err) {
+      console.error(err);
+      deferred.reject(err);
+    });
+
+    return deferred.promise;
+  }
+
+  return {
+    search: search
+  };
 }]);

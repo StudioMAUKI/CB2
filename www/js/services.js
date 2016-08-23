@@ -418,7 +418,7 @@ angular.module('CB2.services', [])
             $scope.location.type = 'mauki';
             $scope.location.name = $scope.search.query;
             $scope.location.lps = null;
-            $scope.location.formatted_address = StorageService.get('addr1') || StorageService.get('addr2') ||
+            $scope.location.formatted_address = StorageService.get('addr1') || StorageService.get('addr2') || StorageService.get('addr3') || null;
             $scope.close();
           }
         };

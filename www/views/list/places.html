@@ -16,7 +16,7 @@
 					<!-- <div class="button button-icon button-clear ion-map" ng-click="places.goToMap()"></div> -->
 				</span>
 			</ion-item>
-			<ion-item collection-repeat="post in places.posts" class="item-thumbnail-right" href="#/places/{{post.uplace_uuid}}" nav-direction="forward">
+			<ion-item collection-repeat="post in places.posts" class="item-thumbnail-right" href="#/list/{{post.uplace_uuid}}" nav-direction="forward">
 				<img ng-src="{{post.thumbnailURL}}" alt="{{post.name}}">
 				<h2>
 					<i class="ion-ios-bookmarks" style="color:#4875e9;" ng-show="!post.visited"></i>&nbsp;{{post.name}}

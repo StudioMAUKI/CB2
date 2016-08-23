@@ -201,7 +201,7 @@ angular.module('CB2.controllers')
 				addr1: { content: addrs[0] || null },
 				addr2: { content: addrs[1] || null },
 				addr3: { content: addrs[2] || null },
-        // lps: [{ content: saveFirst.location.lps }],
+        lps: (saveFirst.location.lps !== null) ? [{ content: saveFirst.location.lps }] : null,
         name: { content: saveFirst.location.name }
 			})
 			.then(function(result) {

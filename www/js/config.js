@@ -66,6 +66,16 @@ angular.module('CB2.config', [])
         controllerAs: 'places'
       }
     }
+  })
+	.state('tab.place', {
+    url: '/list/:uplace_uuid',
+    views: {
+      'list': {
+        templateUrl: 'views/list/place.html',
+        controller: 'placeCtrl',
+        controllerAs: 'place'
+      }
+    }
   });
 
 	$urlRouterProvider.otherwise('/home');
