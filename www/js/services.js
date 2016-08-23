@@ -29,7 +29,7 @@ angular.module('CB2.services', [])
 	      targetHeight: 1280,
 	      popoverOptions: CameraPopoverOptions,
 	      correctOrientation: true,
-	      saveToPhotoAlbum: false
+	      saveToPhotoAlbum: true
 	    };
 
 	    $cordovaCamera.getPicture(options)
