@@ -19,7 +19,7 @@ angular.module('CB2.controllers')
         deferred.resolve();
       }, function(err) {
         console.error('Copying URL was failed.', error);
-        seveSecond.clipboardMsg = '오류가 발생하여 클립보드 복사에 실패했습니다.';
+        saveSecond.clipboardMsg = '오류가 발생하여 클립보드 복사에 실패했습니다.';
         deferred.reject(err);
       });
     } else {
